@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ルームIDでつながるオンラインじゃんけん">
-  <title>JANKEN / じゃんけんルーム</title>
+  <meta name="description" content="カードで遊ぶオンラインじゃんけんボードゲーム">
+  <title>JANKEN TABLE / カードじゃんけん</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -13,23 +13,23 @@
 <body>
   <main class="app-shell">
     <header class="topbar">
-      <a class="brand" href="."><span class="brand-mark">◎</span><span>JANKEN<span class="brand-dot">.</span></span></a>
+      <a class="brand" href="."><span class="brand-mark">◎</span><span>JANKEN<span class="brand-dot"> TABLE.</span></span></a>
       <div class="connection-pill"><span id="connection-dot" class="status-dot"></span><span id="connection-label">オフライン</span></div>
     </header>
 
     <section id="lobby-screen" class="screen lobby-screen">
       <div class="intro-copy">
-        <p class="eyebrow">REMOTE HANDS / 01</p>
-        <h1>離れていても、<br><em>一瞬で</em>勝負。</h1>
-        <p class="lede">ルームIDを共有して、気軽に一戦。<br>選択のカウントダウンが始まります。</p>
+        <p class="eyebrow">CARD BATTLE / 01</p>
+        <h1>カードを切って、<br><em>読み合う</em>じゃんけん。</h1>
+        <p class="lede">2〜4人で遊べる、リアルタイムのカードボードゲーム。<br>ルームIDを共有して、テーブルを囲もう。</p>
       </div>
       <div class="lobby-grid">
         <button id="create-room" class="action-card action-primary" type="button">
-          <span class="action-index">01</span><span class="action-icon">＋</span><span class="action-title">ルームを作る</span><span class="action-note">IDを発行して友だちを招待</span><span class="action-arrow">↗</span>
+          <span class="action-index">01</span><span class="action-icon">＋</span><span class="action-title">テーブルを作る</span><span class="action-note">ルールを決めて友だちを招待</span><span class="action-arrow">↗</span>
         </button>
         <div class="join-panel">
           <div class="action-index">02</div>
-          <h2>ルームに参加</h2>
+          <h2>テーブルに参加</h2>
           <p>受け取ったIDを入力してください</p>
           <form id="join-form" class="join-form">
             <label class="sr-only" for="room-input">ルームID</label>
@@ -38,34 +38,31 @@
           </form>
         </div>
       </div>
-      <p class="privacy-note"><span>↔</span> 1対1のリアルタイム接続 / ルームは一時的です</p>
+      <button id="how-to-play" class="how-to-play" type="button"><span class="how-icon">?</span><span><strong>あそびかた</strong><small>カードの流れを3分で確認</small></span><span>↗</span></button>
+      <p class="privacy-note"><span>↔</span> 2〜4人のリアルタイム接続 / テーブルは一時的です</p>
     </section>
 
     <section id="waiting-screen" class="screen waiting-screen hidden">
-      <div class="waiting-orbit"><span></span><span></span><span></span></div>
-      <p class="eyebrow">ROOM READY</p>
-      <h1>ルームを<br><em>共有しよう。</em></h1>
-      <p class="lede">このIDを対戦相手に伝えてください</p>
-      <div class="room-code-wrap"><div id="room-code" class="room-code">------</div><button id="copy-room" type="button" class="copy-button">コピー <span>□</span></button></div>
-      <div class="waiting-status"><span class="pulse-dot"></span><span id="waiting-label">相手の参加を待っています</span></div>
-      <button id="cancel-room" class="text-button" type="button">ロビーに戻る</button>
+      <div class="room-top"><div><p class="eyebrow">TABLE / <span id="room-code">------</span></p><h1>ルールを<br><em>決めよう。</em></h1></div><button id="cancel-room" class="text-button" type="button">退出</button></div>
+      <div class="room-layout">
+        <div class="settings-panel"><div class="panel-kicker">HOST SETTINGS</div><label>プレイ人数<select id="player-count"><option value="2">2人</option><option value="3">3人</option><option value="4">4人</option></select></label><label>選択時間<select id="time-limit"><option value="15">15秒</option><option value="30">30秒</option><option value="60">60秒</option></select></label><label>ゲーム形式<select id="game-mode"><option value="single">1ゲーム</option><option value="full">フルゲーム</option></select></label><button id="start-game" class="start-button" type="button">ゲームスタート <span>↗</span></button><p id="start-note" class="form-note">あと1人参加すると開始できます</p></div>
+        <div class="players-panel"><div class="panel-heading"><span>PLAYERS</span><strong id="player-count-label">1 / 2</strong></div><div id="players-list" class="players-list"></div><div class="share-box"><span class="share-label">ROOM ID</span><strong id="room-code-large">------</strong><button id="copy-room" type="button" class="copy-button">コピー</button></div></div>
+      </div>
     </section>
 
     <section id="game-screen" class="screen game-screen hidden">
-      <div class="game-head"><div><p class="eyebrow">MATCH / <span id="match-room">------</span></p><h1>Choose your <em>hand.</em></h1></div><button id="leave-game" class="icon-button" type="button" aria-label="退出">×</button></div>
-      <div class="score-strip"><div><span>YOU</span><strong id="you-score">0</strong></div><div class="versus">VS</div><div><span>OPPONENT</span><strong id="opponent-score">0</strong></div></div>
-      <div class="timer-box"><div class="timer-label">SELECT YOUR HAND</div><div id="timer" class="timer">15</div><div class="timer-track"><span id="timer-bar"></span></div></div>
-      <div id="game-message" class="game-message">手を選んでください</div>
-      <div class="hands" role="group" aria-label="じゃんけんの手">
-        <button class="hand-button" data-hand="rock" type="button"><span class="hand-emoji">✊</span><span class="hand-name">グー</span><span class="hand-key">ROCK</span></button>
-        <button class="hand-button" data-hand="scissors" type="button"><span class="hand-emoji">✌</span><span class="hand-name">チョキ</span><span class="hand-key">SCISSORS</span></button>
-        <button class="hand-button" data-hand="paper" type="button"><span class="hand-emoji">🖐</span><span class="hand-name">パー</span><span class="hand-key">PAPER</span></button>
-      </div>
-      <div id="result-panel" class="result-panel hidden"><div id="result-title" class="result-title"></div><div class="revealed-hands"><div><span id="your-hand-emoji">？</span><small>YOU</small></div><div class="result-vs">×</div><div><span id="opponent-hand-emoji">？</span><small>OPPONENT</small></div></div><p id="result-detail"></p><button id="next-round" class="next-button" type="button">もう一度 <span>↗</span></button></div>
+      <div class="game-head"><div><p class="eyebrow">TABLE / <span id="match-room">------</span> / <span id="phase-label">投票フェーズ</span></p><h1 id="game-title">場にカードを置こう。</h1></div><button id="leave-game" class="icon-button" type="button" aria-label="退出">×</button></div>
+      <div id="players-board" class="players-board"></div>
+      <div class="timer-box"><div class="timer-label" id="timer-label">YOUR TURN</div><div id="timer" class="timer">15</div><div class="timer-track"><span id="timer-bar"></span></div></div>
+      <div id="game-message" class="game-message">カードと置き場を選んでください</div>
+      <div class="board"><div class="board-zone zone-rock" data-zone="rock"><span class="zone-symbol">✊</span><strong>グー</strong><small id="rock-count">0枚</small><div id="rock-pile" class="card-pile"></div></div><div class="board-zone zone-scissors" data-zone="scissors"><span class="zone-symbol">✌</span><strong>チョキ</strong><small id="scissors-count">0枚</small><div id="scissors-pile" class="card-pile"></div></div><div class="board-zone zone-paper" data-zone="paper"><span class="zone-symbol">🖐</span><strong>パー</strong><small id="paper-count">0枚</small><div id="paper-pile" class="card-pile"></div></div></div>
+      <div id="hand-section" class="hand-section"><div class="section-heading"><span>YOUR HAND</span><strong id="hand-count">0 cards</strong></div><div id="my-hand" class="my-hand"></div><button id="submit-move" class="submit-move" type="button">選択を確定 <span>↗</span></button></div>
+      <div id="result-panel" class="result-panel hidden"><div id="result-title" class="result-title"></div><p id="result-detail"></p><div id="revealed-list" class="revealed-list"></div><button id="next-round" class="next-button" type="button">次へ進む <span>↗</span></button></div>
     </section>
 
+    <div id="how-modal" class="modal hidden"><div class="modal-backdrop"></div><div class="modal-card"><button id="close-how" class="modal-close" type="button">×</button><p class="eyebrow">HOW TO PLAY / 03</p><h2>カードを出して、<br><em>場を動かす。</em></h2><div class="how-illustration"><div class="mini-card mini-rock">✊<small>6</small></div><div class="mini-card mini-scissors">✌<small>7</small></div><div class="mini-card mini-paper">🖐<small>8</small></div><span class="illustration-arrow">→</span><div class="mini-board">BOARD<br><b>✊ ✌ 🖐</b></div></div><ol class="how-list"><li><b>投票</b><span>親から順に、手札を場へ裏向きで置きます。</span></li><li><b>じゃんけん</b><span>カードを選んで同時に公開。数字の読み合いも勝負です。</span></li><li><b>回収と得点</b><span>負けた手の場を回収し、カードをなくした人が勝利。</span></li></ol></div></div>
     <div id="toast" class="toast" role="status"></div>
-    <footer><span>JANKEN / REMOTE MATCH</span><span>NO ACCOUNT REQUIRED</span></footer>
+    <footer><span>JANKEN / CARD TABLE</span><span>NO ACCOUNT REQUIRED</span></footer>
   </main>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <script src="app.js"></script>
