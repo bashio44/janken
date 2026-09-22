@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ルームIDでつながるオンラインじゃんけん">
+  <title>JANKEN / じゃんけんルーム</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="."><span class="brand-mark">◎</span><span>JANKEN<span class="brand-dot">.</span></span></a>
+      <div class="connection-pill"><span id="connection-dot" class="status-dot"></span><span id="connection-label">オフライン</span></div>
+    </header>
+
+    <section id="lobby-screen" class="screen lobby-screen">
+      <div class="intro-copy">
+        <p class="eyebrow">REMOTE HANDS / 01</p>
+        <h1>離れていても、<br><em>一瞬で</em>勝負。</h1>
+        <p class="lede">ルームIDを共有して、気軽に一戦。<br>選択のカウントダウンが始まります。</p>
+      </div>
+      <div class="lobby-grid">
+        <button id="create-room" class="action-card action-primary" type="button">
+          <span class="action-index">01</span><span class="action-icon">＋</span><span class="action-title">ルームを作る</span><span class="action-note">IDを発行して友だちを招待</span><span class="action-arrow">↗</span>
+        </button>
+        <div class="join-panel">
+          <div class="action-index">02</div>
+          <h2>ルームに参加</h2>
+          <p>受け取ったIDを入力してください</p>
+          <form id="join-form" class="join-form">
+            <label class="sr-only" for="room-input">ルームID</label>
+            <input id="room-input" maxlength="6" placeholder="ROOM ID" autocomplete="off" spellcheck="false">
+            <button type="submit" aria-label="ルームに参加">→</button>
+          </form>
+        </div>
+      </div>
+      <p class="privacy-note"><span>↔</span> 1対1のリアルタイム接続 / ルームは一時的です</p>
+    </section>
+
+    <section id="waiting-screen" class="screen waiting-screen hidden">
+      <div class="waiting-orbit"><span></span><span></span><span></span></div>
+      <p class="eyebrow">ROOM READY</p>
+      <h1>ルームを<br><em>共有しよう。</em></h1>
+      <p class="lede">このIDを対戦相手に伝えてください</p>
+      <div class="room-code-wrap"><div id="room-code" class="room-code">------</div><button id="copy-room" type="button" class="copy-button">コピー <span>□</span></button></div>
+      <div class="waiting-status"><span class="pulse-dot"></span><span id="waiting-label">相手の参加を待っています</span></div>
+      <button id="cancel-room" class="text-button" type="button">ロビーに戻る</button>
+    </section>
+
+    <section id="game-screen" class="screen game-screen hidden">
+      <div class="game-head"><div><p class="eyebrow">MATCH / <span id="match-room">------</span></p><h1>Choose your <em>hand.</em></h1></div><button id="leave-game" class="icon-button" type="button" aria-label="退出">×</button></div>
+      <div class="score-strip"><div><span>YOU</span><strong id="you-score">0</strong></div><div class="versus">VS</div><div><span>OPPONENT</span><strong id="opponent-score">0</strong></div></div>
+      <div class="timer-box"><div class="timer-label">SELECT YOUR HAND</div><div id="timer" class="timer">15</div><div class="timer-track"><span id="timer-bar"></span></div></div>
+      <div id="game-message" class="game-message">手を選んでください</div>
+      <div class="hands" role="group" aria-label="じゃんけんの手">
+        <button class="hand-button" data-hand="rock" type="button"><span class="hand-emoji">✊</span><span class="hand-name">グー</span><span class="hand-key">ROCK</span></button>
+        <button class="hand-button" data-hand="scissors" type="button"><span class="hand-emoji">✌</span><span class="hand-name">チョキ</span><span class="hand-key">SCISSORS</span></button>
+        <button class="hand-button" data-hand="paper" type="button"><span class="hand-emoji">🖐</span><span class="hand-name">パー</span><span class="hand-key">PAPER</span></button>
+      </div>
+      <div id="result-panel" class="result-panel hidden"><div id="result-title" class="result-title"></div><div class="revealed-hands"><div><span id="your-hand-emoji">？</span><small>YOU</small></div><div class="result-vs">×</div><div><span id="opponent-hand-emoji">？</span><small>OPPONENT</small></div></div><p id="result-detail"></p><button id="next-round" class="next-button" type="button">もう一度 <span>↗</span></button></div>
+    </section>
+
+    <div id="toast" class="toast" role="status"></div>
+    <footer><span>JANKEN / REMOTE MATCH</span><span>NO ACCOUNT REQUIRED</span></footer>
+  </main>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
